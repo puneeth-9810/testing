@@ -38,16 +38,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v0.1.10
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            docker stop spring-ec2-demo || true
-            docker rm spring-ec2-demo || true
-            docker pull ${{ secrets.DOCKER_USERNAME }}/spring-ec2-demo:latest
-            docker run -d -p 8080:8080 --name spring-ec2-demo ${{ secrets.DOCKER_USERNAME }}/spring-ec2-demo:latest
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Deploy Docker container via SSM
+        run: |
+          aws ssm send-command \
+            --targets "Key=InstanceIds,Values=${{ secrets.EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy Spring Boot Docker App" \
+            --parameters 'commands=[
+              "docker stop spring-ec2-demo || true",
+              "docker rm spring-ec2-demo || true",
+              "docker pull '${{ secrets.DOCKER_USERNAME }}/spring-ec2-demo:latest'",
+              "docker run -d -p 8080:8080 --name spring-ec2-demo '${{ secrets.DOCKER_USERNAME }}/spring-ec2-demo:latest'"
+            ]'
+
 
             
