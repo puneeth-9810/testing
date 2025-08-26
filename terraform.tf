@@ -21,7 +21,7 @@ resource "aws_instance" "spring_ec2" {
               sudo yum install -y docker git -y
               sudo service docker start
               sudo usermod -aG docker ec2-user
-              docker login -u puneeth9810 -p 'puneeth@05$*'
+              docker login -u puneeth9810 -p $DOCKERHUB_TOKEN
               docker pull puneeth9810/spring-ec2-demo:latest
               docker run -d -p 8080:8080 --name spring-ec2-demo puneeth9810/spring-ec2-demo:latest
               EOF
