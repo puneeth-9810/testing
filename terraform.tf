@@ -7,6 +7,8 @@ resource "aws_instance" "spring_ec2" {
   instance_type = "t2.micro"
   key_name      = "test"
 
+  associate_public_ip_address = true
+
   vpc_security_group_ids = [aws_security_group.allow_http.id]
 
   tags = {
@@ -19,7 +21,7 @@ resource "aws_instance" "spring_ec2" {
               sudo yum install -y docker git -y
               sudo service docker start
               sudo usermod -aG docker ec2-user
-              docker login -u puneeth9810 -p puneeth@05$*
+              docker login -u puneeth9810 -p 'puneeth@05$*'
               docker pull puneeth9810/spring-ec2-demo:latest
               docker run -d -p 8080:8080 --name spring-ec2-demo puneeth9810/spring-ec2-demo:latest
               EOF
