@@ -49,3 +49,5 @@ jobs:
             docker rm spring-ec2-demo || true
             docker pull ${{ secrets.DOCKER_USERNAME }}/spring-ec2-demo:latest
             docker run -d -p 8080:8080 --name spring-ec2-demo ${{ secrets.DOCKER_USERNAME }}/spring-ec2-demo:latest
+
+            
