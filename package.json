@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "aws": "^0.0.3-2",
+    "terraform": "^1.23.0"
+  }
+}
